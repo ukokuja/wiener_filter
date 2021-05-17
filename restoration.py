@@ -6,7 +6,7 @@ from numpy.fft import fft2, ifft2
 from scipy.signal import convolve2d
 from scipy.signal.windows import gaussian
 
-RESULT_FILENAME_KEY = "results_{sigma_noise}_{sigma_blur}/result_{{quality}}.jpg"
+RESULT_FILENAME_KEY = "{folder}/result_{{quality}}.jpg"
 import matplotlib.pyplot as plt
 
 REGION_SIZE = 3
@@ -40,7 +40,7 @@ class Noiser():
         folder = 'results_{sigma_noise}_{sigma_blur}'.format(sigma_noise=sigma_noise, sigma_blur=sigma_blur)
         self._create_folder(folder)
         cv2.imwrite('{folder}/image_with_noise.png'.format(folder=folder), noise_img)
-        return noise_img
+        return noise_img, folder
 
     def _create_folder(self, folder):
         try:
@@ -119,5 +119,5 @@ if __name__ == "__main__":
     }]
 
     for case in cases:
-        image_with_noise = noiser.run(filename, **case)
-        wiener.run(image_with_noise, filename=RESULT_FILENAME_KEY.format(**case))
+        image_with_noise, folder = noiser.run(filename, **case)
+        wiener.run(image_with_noise, filename=RESULT_FILENAME_KEY.format(folder=folder))
